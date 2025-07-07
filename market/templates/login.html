@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log In | Cosmas Innovation</title>
+  {% include "bootstrap.html" %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="dark-mode">
+
+  {% include "navbar.html" %}
+
+  <div class="container">
+    <div class="form-register mt-5">
+      <div class="branding-header text-center mb-4">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+        <h2>Welcome Back</h2>
+        <button id="theme-toggle" class="btn btn-sm btn-outline-light mt-2">Toggle Theme</button>
+      </div>
+
+      <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+          {{ form.username_or_email.label(class="form-label") }}
+          {{ form.username_or_email(class="form-control", placeholder="Username or Email") }}
+          {% for error in form.username_or_email.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group mb-4">
+          {{ form.password.label(class="form-label") }}
+          {{ form.password(class="form-control", placeholder="Password") }}
+          {% for error in form.password.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="text-center">
+          {{ form.submit(class="btn btn-primary px-5") }}
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const toggleBtn = document.getElementById('theme-toggle');
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      document.body.classList.toggle('light-mode');
+    });
+  </script>
+</body>
+</html>

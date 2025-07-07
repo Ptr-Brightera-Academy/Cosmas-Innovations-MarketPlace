@@ -1,0 +1,61 @@
+/* Responsive Nav from before */
+@media (max-width: 767.98px) {
+  .navbar-nav {
+    width: 100%;
+    text-align: center;
+  }
+  .navbar-nav .nav-item {
+    flex: 1;
+  }
+}
+
+/* Base theme styles */
+body {
+  background-color: #212121;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Light theme */
+body.light-mode {
+  background-color: #f8f9fa;
+  color: #212121;
+}
+
+.form-register {
+  background-color: #343a40;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: 0 auto;
+  color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+body.light-mode .form-register {
+  background-color: white;
+  color: #212121;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.form-register h2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.logo {
+  height: 60px;
+  width: 60px;
+}
+
+/* Buttons */
+.btn-outline-light {
+  border-color: white;
+  color: white;
+}
+
+body.light-mode .btn-outline-light {
+  border-color: #212121;
+  color: #212121;
+}
