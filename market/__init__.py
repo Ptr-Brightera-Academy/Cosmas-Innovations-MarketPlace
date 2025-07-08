@@ -2,6 +2,8 @@ from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 import os
 from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
+from market import routes
 
 
 # base directory
@@ -16,5 +18,5 @@ app.config['SECRET_KEY'] = 'b3a7ad096790a5d6213e02a1'
 
 db = SQLAlchemy(app)
 bcrypt= Bcrypt(app)
+login_manager = LoginManager(app)
 
-from market import routes
