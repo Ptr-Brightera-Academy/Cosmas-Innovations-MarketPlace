@@ -7,6 +7,7 @@
   {% include "bootstrap.html" %}
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+  
 <body class="dark-mode">
 
   {% include "navbar.html" %}
@@ -34,9 +35,10 @@
           {{ form.password.label(class="form-label") }}
           {{ form.password(class="form-control", placeholder="Password") }}
           {% for error in form.password.errors %}
-            <div class="text-danger">{{ error }}</div>
+        <div class="text-danger">{{ error }}</div>
           {% endfor %}
         </div>
+        
         <div class="checkbox mb-3 text-center">
             <h5>Do not have an account?</h5>
             <a class="btn btn-secondary" href="{{ url_for('register_page') }}">Register</a>
