@@ -19,7 +19,7 @@
         <button id="theme-toggle" class="btn btn-sm btn-outline-light mt-2">Toggle Theme</button>
       </div>
 
-      <form method="POST">
+      <form method="POST" action = "{{ url_for('login_page') }}" class="form-register" style="max-width: 400px; margin: 0 auto;" >
         {{ form.hidden_tag() }}
 
         <div class="form-group">

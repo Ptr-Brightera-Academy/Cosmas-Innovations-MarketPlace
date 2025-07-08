@@ -3,6 +3,7 @@ from flask import render_template, url_for, flash, redirect, request
 from market.models import Item, User
 from market.forms import RegisterForm, LoginForm
 from market import db
+from flask_login import login_user
 
 # Routes
 @app.route('/')
@@ -18,7 +19,8 @@ def login_page():
             (User.email_address == form.username_or_email.data)
         ).first()
 
-        if attempted_user and attempted_user.check_password_correction(form.password.data):
+        if attempted_user and attempted_user.check_password_correction(attempted_password = form.password.data):
+            login_user(attempted_user)
             flash(f'Successfully logged in', category='success')
             return redirect(url_for('market_page')) 
         else:
