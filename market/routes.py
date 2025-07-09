@@ -47,4 +47,14 @@ def register_page():
 @app.route('/market_sell')
 def market_page():
     items = Item.query.all()
+    search_query = request.args.get('q', '', type=str)
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+
+    query = Item.query
+    if search_query:
+        query = query.filter(Item.name.ilike(f"%{search_query}%"))
+
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+    items = pagination.items
     return render_template('market.html', items=items)

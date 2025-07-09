@@ -1,39 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Market Page</title>
-  {% include "bootstrap.html" %} 
+  {% include "bootstrap.html" %}
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .hero {
+      background: linear-gradient(to right, #343a40, #212529);
+      color: white;
+      padding: 60px 0;
+      text-align: center;
+    }
+    .hero h1 {
+      font-weight: bold;
+    }
+    .product-table {
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+    .btn {
+      margin-right: 6px;
+    }
+  </style>
 </head>
 <body>
-  {% include "navbar.html" %} 
-  <h4>Laptops Marketplace</h4>
-<table class="table table-hover table-dark">
-  <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Name</th>
-      <th scope="col">Barcode</th>
-      <th scope="col">Price</th>
-      <th scope="col">Options</th>
-    </tr>
-  </thead>
-  <tbody>
-    
-    {% for item in items %}
-    <tr>
-        <td>{{item.id}}</td>
-        <td>{{item.name}}</td>
-        <td>{{item.barcode}}</td>
-        <td>{{item.price}} USD</td>
-        <td>
-            <button  class="btn btn-outline btn-info">Info</button>
-            <button  class="btn btn-outline btn-success">Purchase</button>
-        </td>
-    </tr>
+  {% include "navbar.html" %}
 
-    {% endfor %} 
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="container">
+      <h1 class="display-5">Welcome to the Market</h1>
+      <p class="lead">Browse and purchase high-quality products at the best prices</p>
+    </div>
+  </div>
+  
+  <div class="container my-4 d-flex justify-content-center">
+    <form method="get" class="d-flex" action="{{ url_for('market_page') }}">
+      <input class="form-control me-2" type="search" name="q" placeholder="Search products..." value="{{ search_query }}">
+      <button class="btn btn-outline-secondary" type="submit">Search</button>
+    </form>
+  </div>
+
+  <!-- Products Section -->
+  <div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="mb-0">Our Products</h4>
+    </div>
     
-  </tbody>
-</table>
+    <div class="table-responsive product-table">
+      <table class="table table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">#ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Barcode</th>
+            <th scope="col">Price</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.barcode }}</td>
+            <td><strong>${{ item.price }}</strong></td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary">Info</button>
+              <button class="btn btn-sm btn-success">Purchase</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </body>
 </html>
