@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Product Details | Cosmas Innovation</title>
+  {% include "bootstrap.html" %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+  
+<body class="dark-mode">
+
+  {% include "navbar.html" %}
+
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Product Details</h2>
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">{{item.name}}</h4>
+        <p class="card-text">{{item.description}}</p>
+        <p class="card-text">{{item.price}}</p>
+        <p class="card-text">{{item.barcode}}</p>
+        <a href="{{url_for('purchase_product')}}" class="btn btn-success">Purchase</a>
+        <a href="{{url_for('market_page')}}" class="btn btn-secondary">Back to Market</a>
+        </div>
+      </div>
+    </div>
+  
+</body>
+</html>

@@ -121,3 +121,18 @@ body.light-mode .btn-outline-light {
 .btn {
   margin-right: 6px;
 }
+
+/* Error Flashing */
+.flash-container {
+  width: 100%;
+  max-width: 320px;
+  pointer-events: none; /* Prevent clicks from affecting it */
+}
+
+.small-flash {
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.4rem;
+  pointer-events: auto; /* Still allow the alert itself to handle transitions */
+}
+
