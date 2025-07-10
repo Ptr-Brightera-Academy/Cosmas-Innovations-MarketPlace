@@ -1,35 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Market Page</title>
   {% include "bootstrap.html" %}
-  <style>
-    body {
-      background-color: #f8f9fa;
-    }
-    .hero {
-      background: linear-gradient(to right, #343a40, #212529);
-      color: white;
-      padding: 60px 0;
-      text-align: center;
-    }
-    .hero h1 {
-      font-weight: bold;
-    }
-    .product-table {
-      background-color: #fff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 0 20px rgba(0,0,0,0.05);
-    }
-    .btn {
-      margin-right: 6px;
-    }
-  </style>
 </head>
-<body>
+  
+<body class="marketbody">
   {% include "navbar.html" %}
 
   <!-- Hero Section -->
@@ -40,6 +16,7 @@
     </div>
   </div>
   
+  <!-- Search Section -->
   <div class="container my-4 d-flex justify-content-center">
     <form method="get" class="d-flex" action="{{ url_for('market_page') }}">
       <input class="form-control me-2" type="search" name="q" placeholder="Search products..." value="{{ search_query }}">
@@ -50,7 +27,7 @@
   <!-- Products Section -->
   <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="mb-0">Our Products</h4>
+      <h4 class="mb-0 text-dark">Our Products</h4>
     </div>
     
     <div class="table-responsive product-table">
@@ -72,8 +49,8 @@
             <td>{{ item.barcode }}</td>
             <td><strong>${{ item.price }}</strong></td>
             <td>
-              <button class="btn btn-sm btn-outline-primary">Info</button>
-              <button class="btn btn-sm btn-success">Purchase</button>
+              <button class="btn btn-sm btn-outline-primary mb-2 me-2">Info</button>
+              <button class="btn btn-sm btn-success mb-2 me-2">Purchase</button>
             </td>
           </tr>
           {% endfor %}

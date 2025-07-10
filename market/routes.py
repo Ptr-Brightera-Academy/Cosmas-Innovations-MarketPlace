@@ -3,7 +3,7 @@ from flask import render_template, url_for, flash, redirect, request
 from market.models import Item, User
 from market.forms import RegisterForm, LoginForm
 from market import db
-from flask_login import login_user
+from flask_login import login_user, logout_user, login_required
 
 # Routes
 @app.route('/')
@@ -45,16 +45,18 @@ def register_page():
     return render_template('register.html', form=form)
 
 @app.route('/market_sell')
+@login_required
 def market_page():
     items = Item.query.all()
     search_query = request.args.get('q', '', type=str)
-    page = request.args.get('page', 1, type=int)
-    per_page = 10
-
     query = Item.query
     if search_query:
         query = query.filter(Item.name.ilike(f"%{search_query}%"))
-
-    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
-    items = pagination.items
+        
     return render_template('market.html', items=items)
+
+@app.route('/logout')
+def logout_page():
+    logout_user()
+    flash('You have been logged out.', category='info')
+    return redirect(url_for('home_page'))

@@ -1,4 +1,4 @@
-/* Responsive Nav from before */
+/* Device Responsive Nav */
 @media (max-width: 767.98px) {
   .navbar-nav {
     width: 100%;
@@ -16,7 +16,7 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* Light theme */
+/* Register Page Light theme */
 body.light-mode {
   background-color: #f8f9fa;
   color: #212121;
@@ -58,4 +58,66 @@ body.light-mode .form-register {
 body.light-mode .btn-outline-light {
   border-color: #212121;
   color: #212121;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Home Page styling */
+.hero-btn {
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/*Device styling */
+.product-device2 {
+  position: absolute;
+  right: 10%;
+  bottom: -30px;
+  width: 200px;
+  height: 400px;
+  background: #dee2e6;
+  border-radius: 20px;
+  transform: rotate(10deg);
+  z-index: 0;
+  opacity: 0.5;
+}
+
+.product-device2:first-of-type {
+  left: 10%;
+  right: auto;
+  transform: rotate(-10deg);
+}
+
+@media (max-width: 768px) {
+  .product-device2 {
+    display: none;
+  }
+}
+
+/* Market Page styling */
+.marketbody {
+  background-color: #f8f9fa;
+}
+.hero {
+  background: linear-gradient(to right, #343a40, #212529);
+  color: white;
+  padding: 60px 0;
+  text-align: center;
+}
+.hero h1 {
+  font-weight: bold;
+}
+.product-table {
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+.btn {
+  margin-right: 6px;
 }

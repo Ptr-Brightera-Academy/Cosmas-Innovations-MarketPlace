@@ -2,16 +2,27 @@
 <html lang="en">
 <head>
   <title>Cosmas Innovation</title>
-{% include "bootstrap.html" %} 
+  {% include "bootstrap.html" %}
 </head>
 <body>
-  {% include "navbar.html" %} 
+  {% include "navbar.html" %}
+  
   <div class="container mt-5">
+    <header class="text-center mb-5">
+      <h4 class="display-5">Cheap Price Products</h4>
+    </header>
 
-  <header class="text-center mb-5">
-    <h4 class="display-5">Cheap Price Products</h4>
-  </header>
+    <!-- Hero Section -->
+    <div class="position-relative overflow-hidden p-5 text-center hero-section">
+      <div class="col-md-6 mx-auto z-1 position-relative">
+        <h2 class="fw-normal mb-4 text-dark">Start purchasing products by clicking the link below</h2>
+        <a class="btn btn-primary hero-btn" href="{{ url_for('market_page') }}">Get Started</a>
+      </div>
 
+      <!-- Decorative Device Mockups -->
+      <div class="product-device2 d-none d-md-block"></div>
+      <div class="product-device2 d-none d-md-block"></div>
+    </div>
   </div>
 </body>
 </html>
