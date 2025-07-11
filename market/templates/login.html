@@ -10,7 +10,6 @@
 
   {% include "navbar.html" %}
 
-  
   {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
   <div class="flash-container position-fixed start-50 translate-middle-x" style="top: 80px; z-index: 1055;">
@@ -58,6 +57,9 @@
         <div class="text-center">
           {{ form.submit(class="btn btn-primary px-5") }}
         </div>
+        <div class="text-center mt-3">
+          <a href="{{ url_for('reset_request') }}">Forgot Password?</a>
+        </div>
       </form>
     </div>
   </div>
@@ -76,8 +78,8 @@
         setTimeout(() => el.remove(), 200);
       });
     }, 2000);
-    
   </script>
   
 </body>
+  
 </html>

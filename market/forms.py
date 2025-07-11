@@ -40,4 +40,7 @@ def validate_password(form, field):
         raise ValidationError("User not found.")
     if not user.check_password_correction(field.data):
         raise ValidationError("Incorrect password.")
-    
+
+class ResetRequestForm(FlaskForm):
+    username_or_email = StringField('Username or Email', validators=[DataRequired()])
+    submit = SubmitField('Request Reset')

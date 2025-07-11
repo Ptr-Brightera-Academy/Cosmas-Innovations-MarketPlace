@@ -1,7 +1,7 @@
 from market import app
 from flask import render_template, url_for, flash, redirect, request
 from market.models import Item, User
-from market.forms import RegisterForm, LoginForm
+from market.forms import RegisterForm, LoginForm, ResetRequestForm
 from market import db
 from flask_login import login_user, logout_user, login_required
 
@@ -73,3 +73,17 @@ def product_details(item_id):
 @app.route('/purchase_product')
 def purchase_product():
     return render_template('purchase_product.html')
+
+@app.route('/myAccount/lost_password', methods=['GET', 'POST'])
+def reset_request():
+    form = ResetRequestForm()
+    if form.validate_on_submit():
+        input_value = form.username_or_email.data
+        attempted_user = User.query.filter(
+            (User.username == input_value) | (User.email_address == input_value)
+            ).first()
+        if attempted_user:
+            flash('A password reset link has been sent. Please check your email.', category='info')
+        else:
+            flash('No account found. Please try again.', category='warning')
+    return render_template('reset_request.html', form=form)

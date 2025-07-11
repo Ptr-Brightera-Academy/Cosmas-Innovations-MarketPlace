@@ -3,7 +3,6 @@
 <head>
   <title>Create Account | Cosmas Innovation </title>
   {% include "bootstrap.html" %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body class="dark-mode">
 
@@ -51,11 +50,13 @@
           {% endfor %}
         </div>
 
-<div class="text-center">
-  {{ form.submit(class="btn btn-primary px-5") }}
-</div>
-
-
+        <div class="text-center">
+          {{ form.submit(class="btn btn-primary px-5") }}
+        </div>
+        <div class="text-center mt-3">
+          <h5>Already have an account?</h5>
+          <a class="btn btn-secondary" href="{{ url_for('login_page') }}">Login</a>
+        </div>
       </form>
     </div>
   </div>

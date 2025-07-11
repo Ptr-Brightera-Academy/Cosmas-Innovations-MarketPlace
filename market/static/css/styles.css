@@ -124,15 +124,27 @@ body.light-mode .btn-outline-light {
 
 /* Error Flashing */
 .flash-container {
-  width: 100%;
+  width: 90%;
   max-width: 320px;
-  pointer-events: none; /* Prevent clicks from affecting it */
+  pointer-events: none;
+}
+
+.r-flash-container {
+  width: 90%;
+  max-width: 500px;
+  pointer-events: none;
+}
+
+.r-flash-mobile {
+  width: 100%;
+  max-width: 500px;
+  pointer-events: none;
 }
 
 .small-flash {
   font-size: 0.85rem;
   padding: 0.5rem 0.75rem;
   border-radius: 0.4rem;
-  pointer-events: auto; /* Still allow the alert itself to handle transitions */
+  pointer-events: auto;
 }
 

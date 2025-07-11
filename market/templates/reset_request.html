@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Forgot Password | Cosmas Innovation</title>
+  {% include "bootstrap.html" %}
+</head>
+<body class="dark-mode">
+
+  {% include "navbar.html" %}
+  
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  
+    <!-- Desktop Flash -->
+    <div class="r-flash-container d-none d-md-block position-fixed start-50 translate-middle-x" style="top: 80px; z-index: 1055;">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} fade show auto-dismiss text-center shadow-sm mb-2 small-flash" role="alert">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Mobile Flash -->
+    <div class="r-flash-mobile d-block d-md-none mt-3">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} fade show auto-dismiss text-center shadow-sm mb-2 small-flash" role="alert">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% endwith %}
+  
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <h2 class="text-center mb-4">Reset Password</h2>
+            <form method="POST" action="{{ url_for('reset_request') }}">
+              {{ form.hidden_tag() }}
+              
+              <div class="mb-3">
+                <label for="username_or_email" class="form-label">Username or Email</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="username_or_email" 
+                  name="username_or_email" 
+                  placeholder="Enter your username or email" 
+                  required>
+              </div>
+
+              <div class="mb-4 text-center">
+                <button type="submit" class="btn btn-primary">Request Reset</button>
+              </div>
+
+              <div class="text-center">
+                <p class="mb-2">Remember your password?</p>
+                <a class="btn btn-outline-secondary" href="{{ url_for('login_page') }}">Login</a>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Flash Message Auto Dismiss Script -->
+  <script>
+    setTimeout(() => {
+      const alerts = document.querySelectorAll('.auto-dismiss');
+      alerts.forEach(alert => {
+        alert.classList.remove('show');
+        alert.classList.add('fade');
+        setTimeout(() => alert.remove(), 200); 
+      });
+    }, 2000);
+  </script>
+</body>
+</html>
