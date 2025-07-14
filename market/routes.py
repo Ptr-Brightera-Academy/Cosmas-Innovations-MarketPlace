@@ -21,7 +21,7 @@ def login_page():
 
         if attempted_user and attempted_user.check_password_correction(attempted_password = form.password.data):
             login_user(attempted_user)
-            flash(f'Successfully logged in', category='success')
+            flash('Successfully logged in', category='success')
             return redirect(url_for('market_page')) 
         else:
             flash('Login failed | Wrong credintials.', category='danger')
@@ -39,7 +39,7 @@ def register_page():
         )
         db.session.add(user_to_create)
         db.session.commit()
-        flash(f'Account created successfully! You can log in.', category='success')
+        flash('Account created successfully! You can log in.', category='success')
         return redirect(url_for('login_page'))  
 
     return render_template('register.html', form=form)
@@ -63,7 +63,7 @@ def market_page():
 def logout_page():
     logout_user()
     flash('You have been logged out.', category='info')
-    return redirect(url_for('home_page'))
+    return redirect(url_for('login_page'))
 
 @app.route('/product_details/<item_id>')
 def product_details(item_id):

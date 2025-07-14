@@ -24,15 +24,24 @@
         </ul>
 
         <!-- Search bar -->
-        <form class="d-none d-lg-flex me-2" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-secondary" type="submit">Search</button>
-        </form>
+        {% if not current_user.is_authenticated %}
+          <form class="d-none d-lg-flex me-2" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-secondary" type="submit">Search</button>
+          </form>
+        {% endif %}
+        <!-- End of search bar -->
+        
+        <!-- Cart button -->
+        <a href="#" class="btn btn-outline-warning d-flex align-items-center             gap-2">
+          <i class="bi bi-cart"></i>
+          Cart
+        </a>
+        <!-- End of cart button -->
 
         {% if current_user.is_authenticated %}
         <div class="d-flex justify-content-center">
           <a href="#" class="btn btn-outline-secondary me-2">Account</a>
-          <a href="#" class="btn btn-outline-warning me-2">Cart</a>
           <a href="{{url_for('logout_page')}}" class="btn btn-outline-danger me-2">Logout</a>
           
         </div>
