@@ -4,6 +4,7 @@ from market.models import Item, User
 from market.forms import RegisterForm, LoginForm, ResetRequestForm
 from market import db
 from flask_login import login_user, logout_user, login_required
+from datetime import datetime
 
 # Routes
 @app.route('/')
@@ -87,3 +88,7 @@ def reset_request():
         else:
             flash('No account found. Please try again.', category='warning')
     return render_template('reset_request.html', form=form)
+
+@app.route("/admin/dashboard")
+def admin_dashboard():
+    return render_template("admin/dashboard.html", current_year=datetime.now().year)
