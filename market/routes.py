@@ -92,3 +92,27 @@ def reset_request():
 @app.route("/admin/dashboard")
 def admin_dashboard():
     return render_template("admin/dashboard.html", current_year=datetime.now().year)
+
+@app.route("/orders")
+def view_orders():
+    return render_template("admin/views/orders.html", current_year=datetime.now().year)
+
+@app.route("/users")
+def view_users():
+    return render_template("admin/views/users.html", current_year=datetime.now().year)
+
+@app.route("/products")
+def view_products():
+    return render_template("admin/views/products.html", current_year=datetime.now().year)
+
+@app.route("/customers")
+def view_customers():
+    return render_template("admin/views/customers.html", current_year=datetime.now().year)
+
+@app.route("/reports")
+def view_reports():
+    return render_template("admin/views/reports.html", current_year=datetime.now().year)
+
+@app.route("/settings")
+def admin_settings():
+    return render_template("admin/views/settings.html", current_year=datetime.now().year)
