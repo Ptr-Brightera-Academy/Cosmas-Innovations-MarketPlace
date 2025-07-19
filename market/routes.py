@@ -1,4 +1,4 @@
-from market import app
+from market import app, db, bcrypt, login_manager
 from flask import render_template, url_for, flash, redirect, request
 from market.models import Item, User
 from market.forms import RegisterForm, LoginForm, ResetRequestForm
@@ -9,7 +9,7 @@ from datetime import datetime
 # Routes
 @app.route('/')
 def home_page():
-    return render_template('home.html')
+    return render_template('users/views/home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_page():
@@ -27,7 +27,7 @@ def login_page():
         else:
             flash('Login failed | Wrong credintials.', category='danger')
 
-    return render_template('login.html', form=form)
+    return render_template('users/auth/login.html', form=form)
 
 @app.route('/register', methods=['GET','POST'])
 def register_page():
@@ -43,7 +43,7 @@ def register_page():
         flash('Account created successfully! You can log in.', category='success')
         return redirect(url_for('login_page'))  
 
-    return render_template('register.html', form=form)
+    return render_template('users/auth/register.html', form=form)
 
 @app.route('/market_sell')
 @login_required
@@ -58,7 +58,7 @@ def market_page():
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     items = pagination.items
         
-    return render_template('market.html', items=items)
+    return render_template('users/views/market.html', items=items)
 
 @app.route('/logout')
 def logout_page():
@@ -69,11 +69,11 @@ def logout_page():
 @app.route('/product_details/<item_id>')
 def product_details(item_id):
     item = Item.query.get_or_404(item_id)
-    return render_template('product_details.html', item=item)
+    return render_template('users/views/product_details.html', item=item)
 
 @app.route('/purchase_product')
 def purchase_product():
-    return render_template('purchase_product.html')
+    return render_template('users/views/purchase_product.html')
 
 @app.route('/myAccount/lost_password', methods=['GET', 'POST'])
 def reset_request():
@@ -87,19 +87,73 @@ def reset_request():
             flash('A password reset link has been sent. Please check your email.', category='info')
         else:
             flash('No account found. Please try again.', category='warning')
-    return render_template('reset_request.html', form=form)
+    return render_template('users/auth/reset_request.html', form=form)
 
 @app.route("/admin/dashboard")
 def admin_dashboard():
-    return render_template("admin/dashboard.html", current_year=datetime.now().year)
+    return render_template("admin/views/dashboard.html", current_year=datetime.now().year)
 
 @app.route("/orders")
 def view_orders():
     return render_template("admin/views/orders.html", current_year=datetime.now().year)
 
 @app.route("/users")
-def view_users():
-    return render_template("admin/views/users.html", current_year=datetime.now().year)
+def admin_users():
+    users = User.query.all()
+    return render_template("admin/views/users.html", current_year=datetime.now().year, users=users)
+
+@app.route('/admin/users/edit/<int:user_id>', methods=['POST'])
+def edit_user(user_id):
+    user = User.query.get_or_404(user_id)
+    new_username = request.form.get('username')
+    old_password = request.form.get('old_password')
+    new_password = request.form.get('new_password')
+    confirm_password = request.form.get('confirm_password')
+
+    errors = {}
+
+    # Check for duplicate username
+    if new_username and new_username != user.username:
+        existing_user = User.query.filter_by(username=new_username).first()
+        if existing_user:
+            errors['username'] = "Username already taken"
+        else:
+            user.username = new_username
+
+    # Handle password change
+    if old_password or new_password or confirm_password:
+        if not old_password:
+            errors['old_password'] = "Old password is required"
+        elif not bcrypt.check_password_hash(user.password_hash, old_password):
+            errors['old_password'] = "Old password is incorrect"
+        elif new_password != confirm_password:
+            errors['new_password'] = "New passwords do not match"
+        elif not new_password:
+            errors['new_password'] = "New password cannot be empty"
+        else:
+            user.password_hash = bcrypt.generate_password_hash(new_password).decode('utf-8')
+
+    if errors:
+        users = User.query.all()
+        return render_template("admin/views/users.html", users=users, edit_errors=errors, active_modal_user_id=user.id)
+
+    db.session.commit()
+    return redirect(url_for('admin_users'))
+
+
+@app.route('/admin/users/delete/<int:user_id>')
+def delete_user(user_id):
+    user_to_delete = User.query.get_or_404(user_id)
+
+    try:
+        db.session.delete(user_to_delete)
+        db.session.commit()
+        flash(f'User "{user_to_delete.username}" was successfully deleted.', 'success')
+        return redirect(url_for('admin_users'))
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred while deleting the user.', 'danger')
+        return redirect(url_for('admin_users'))
 
 @app.route("/products")
 def view_products():
@@ -116,3 +170,16 @@ def view_reports():
 @app.route("/settings")
 def admin_settings():
     return render_template("admin/views/settings.html", current_year=datetime.now().year)
+
+@app.route("/admin/login")
+def admin_login():
+    return render_template("admin/auth/login.html")
+
+@app.route('/admin/logout')
+def admin_logout():
+    logout_user()
+    return redirect(url_for('admin_login'))
+
+@app.route('/admin/myAccount/resetPassword')
+def password_reset():
+    return render_template("admin/auth/reset_password.html")

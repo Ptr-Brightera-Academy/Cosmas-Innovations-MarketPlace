@@ -33,10 +33,12 @@
         <!-- End of search bar -->
         
         <!-- Cart button -->
-        <a href="#" class="btn btn-outline-warning d-flex align-items-center             gap-2">
+          <div class="d-flex justify-content-center mb-3 mb-lg-0">
+         <a href="#" class="btn btn-outline-warning d-flex align-items-center gap-2">
           <i class="bi bi-cart"></i>
           Cart
         </a>
+        </div>
         <!-- End of cart button -->
 
         {% if current_user.is_authenticated %}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+<title>Sign In | Cosmas Innovations</title>
+
+<head>
+  {% include 'admin/components/_head.html' %}
+  
+</head>
+
+<body class="bg-white d-flex align-items-center min-vh-100">
+<div class="container">
+    <div class="row justify-content-center">
+      <div class="col-sm-8 col-md-6 col-lg-4">
+        <div class="text-center mb-4">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="img-fluid" style="height: 70px; width:70px"/>
+          <h2 class="mt-4 fw-bold">Sign in to your account</h2>
+        </div>
+
+        <form action="#" method="POST">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" required autocomplete="email" />
+          </div>
+
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <label for="password" class="form-label mb-0">Password</label>
+              <a href="{{url_for('password_reset')}}" class="small text-primary text-decoration-none">Forgot password?</a>
+            </div>
+            <input type="password" class="form-control mt-2" id="password" name="password" required autocomplete="current-password" />
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Sign in</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

@@ -2,17 +2,17 @@
 <html lang="en" data-bs-theme="auto">
 
 <head>
-  {% include 'admin/_head.html' %}
+  {% include 'admin/components/_head.html' %}
 </head>
 
 <body>
-  {% include 'admin/icons.html' %}
+  {% include 'admin/components/icons.html' %}
 
-  {% include 'admin/_navbar.html' %}
+  {% include 'admin/components/_navbar.html' %}
 
   <div class="container-fluid">
     <div class="row">
-      {% include 'admin/sidebar.html' %}
+      {% include 'admin/components/sidebar.html' %}
 
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         {% block content %}{% endblock %}
@@ -69,6 +69,18 @@
     </ul>
   </div>
   {% block scripts %}{% endblock %}
+
+  {% include 'admin/components/_footer.html' %}
+
+
+  {% if active_modal_user_id %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var modal = new bootstrap.Modal(document.getElementById('editUserModal{{ active_modal_user_id }}'));
+    modal.show();
+  });
+</script>
+{% endif %}
 </body>
 
 </html>
