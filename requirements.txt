@@ -5,3 +5,4 @@ flask_wtf
 psycopg2-binary
 flask-bcrypt
 gunicorn
+email_validator
