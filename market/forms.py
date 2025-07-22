@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, DecimalField, FileField
 from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
 from market.models import User
 
@@ -44,3 +44,10 @@ def validate_password(form, field):
 class ResetRequestForm(FlaskForm):
     username_or_email = StringField('Username or Email', validators=[DataRequired()])
     submit = SubmitField('Request Reset')
+
+class ProductForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    price = DecimalField('Price', validators=[DataRequired()])
+    description = StringField('Description')
+    image = FileField('Image')
+    submit = SubmitField('Save Product')

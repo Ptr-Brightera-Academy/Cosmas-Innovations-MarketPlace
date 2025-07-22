@@ -48,15 +48,16 @@
         <div class="text-danger">{{ error }}</div>
           {% endfor %}
         </div>
-        
-        <div class="checkbox mb-3 text-center">
-            <h5>Do not have an account?</h5>
-            <a class="btn btn-secondary" href="{{ url_for('register_page') }}">Register</a>
-        </div>
 
         <div class="text-center">
           {{ form.submit(class="btn btn-primary px-5") }}
         </div>
+
+        <div class="checkbox mb-3 text-center mt-3">
+            <h5>Do not have an account?</h5>
+            <a class="btn btn-secondary" href="{{ url_for('register_page') }}">Register</a>
+        </div>
+
         <div class="text-center mt-3">
           <a href="{{ url_for('reset_request') }}">Forgot Password?</a>
         </div>

@@ -1,15 +1,20 @@
 from market import app, db, bcrypt, login_manager
 from flask import render_template, url_for, flash, redirect, request
-from market.models import Item, User
-from market.forms import RegisterForm, LoginForm, ResetRequestForm
+from werkzeug.utils import secure_filename
+from market.models import Product, User
+from market.forms import RegisterForm, LoginForm, ResetRequestForm, ProductForm
 from market import db
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
+import os
+import slugify 
+from slugify import slugify
 
 # Routes
 @app.route('/')
 def home_page():
-    return render_template('users/views/home.html')
+    products = Product.query.filter_by(published=True).order_by(Product.created_at.desc()).all()
+    return render_template('users/views/home.html', products =products)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_page():
@@ -45,20 +50,21 @@ def register_page():
 
     return render_template('users/auth/register.html', form=form)
 
-@app.route('/market_sell')
+@app.route('/products/market/')
 @login_required
 def market_page():
+    products = Product.query.filter_by(published=True).order_by(Product.created_at.desc()).all()
     search_query = request.args.get('q', '', type=str)
     page = request.args.get('page', 1, type=int)
     per_page = 10
 
-    query = Item.query
+    query = Product.query
     if search_query:
-        query = query.filter(Item.name.ilike(f"%{search_query}%"))
+        query = query.filter(Product.name.ilike(f"%{search_query}%"))
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     items = pagination.items
         
-    return render_template('users/views/market.html', items=items)
+    return render_template('users/views/market.html', items=items, products =products)
 
 @app.route('/logout')
 def logout_page():
@@ -66,10 +72,10 @@ def logout_page():
     flash('You have been logged out.', category='info')
     return redirect(url_for('login_page'))
 
-@app.route('/product_details/<item_id>')
-def product_details(item_id):
-    item = Item.query.get_or_404(item_id)
-    return render_template('users/views/product_details.html', item=item)
+@app.route('/product_details/<slug>')
+def product_details(slug):
+    product = Product.query.filter_by(slug=slug).first_or_404()
+    return render_template('users/views/product_details.html', product=product)
 
 @app.route('/purchase_product')
 def purchase_product():
@@ -157,7 +163,12 @@ def delete_user(user_id):
 
 @app.route("/products")
 def view_products():
-    return render_template("admin/views/products.html", current_year=datetime.now().year)
+    products = Product.query.order_by(Product.updated_at.desc()).all()
+    form = ProductForm()
+    return render_template("admin/views/products.html",
+     current_year = datetime.now().year, 
+     form = form,
+     products = products)
 
 @app.route("/customers")
 def view_customers():
@@ -183,3 +194,96 @@ def admin_logout():
 @app.route('/admin/myAccount/resetPassword')
 def password_reset():
     return render_template("admin/auth/reset_password.html")
+
+
+UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.route('/products/create', methods=['GET', 'POST'])
+@login_required
+def create_product():
+    form = ProductForm()
+    if request.method == 'POST':
+        title = request.form.get('title')
+        price = request.form.get('price')
+        description = request.form.get('description')
+        image = request.files.get('image')
+
+        slug = slugify(title)
+        image_url = None
+        image_mime = None
+        image_size = None
+
+        if image and image.filename:
+            filename = secure_filename(image.filename)
+            save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            image.save(save_path)
+
+            image_url = url_for('static', filename=f'uploads/{filename}')
+            image_mime = image.mimetype
+            image_size = os.path.getsize(save_path)
+
+        product = Product(
+            title=title,
+            slug=slug,
+            price=price,
+            description=description,
+            image=image_url,
+            image_mime=image_mime,
+            image_size=image_size,
+            created_by=current_user.id,
+            updated_by=current_user.id,
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow()
+        )
+
+        db.session.add(product)
+        db.session.commit()
+
+        flash('Product created successfully!', 'success')
+        return redirect(url_for('view_products')) 
+
+    return  render_template("admin/views/products.html", current_year=datetime.now().year, form=form)
+
+def allowed_file(fname):
+    return '.' in fname and fname.rsplit('.',1)[1].lower() in {'png','jpg','jpeg','gif'}
+
+@app.route('/admin/products/edit/<int:id>', methods=['POST'])
+@login_required
+def edit_product(id):
+    product = Product.query.get_or_404(id)
+    product.title = request.form.get('title')
+    product.price = request.form.get('price')
+    product.description = request.form.get('description')
+    product.slug = slugify(product.title)
+    product.updated_by = current_user.id
+    product.updated_at = datetime.utcnow()
+
+    image = request.files.get('image')
+    if image and allowed_file(image.filename):
+        filename = secure_filename(image.filename)
+        save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        image.save(save_path)
+        product.image = url_for('static', filename=f'uploads/{filename}')
+        product.image_mime = image.mimetype
+        product.image_size = os.path.getsize(save_path)
+
+    db.session.commit()
+    flash('Product updated successfully!', 'success')
+    return redirect(url_for('view_products'))
+
+@app.route('/admin/products/delete/<int:id>', methods=['GET'])
+@login_required
+def delete_product(id):
+    product = Product.query.get_or_404(id)
+    db.session.delete(product)
+    db.session.commit()
+    flash('Product deleted successfully!', 'danger')
+    return redirect(url_for('view_products'))
+
+@app.route('/product/<slug>')
+def products_view(slug):
+    product = Product.query.filter_by(slug=slug).first_or_404()
+    return render_template('users/views/products.html', product=product)

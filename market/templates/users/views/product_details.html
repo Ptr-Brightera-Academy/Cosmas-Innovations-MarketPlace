@@ -11,18 +11,46 @@
   {% include "users/components/navbar.html" %}
 
   <div class="container mt-5">
-    <h2 class="text-center mb-4">Product Details</h2>
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title">{{item.name}}</h4>
-        <p class="card-text">{{item.description}}</p>
-        <p class="card-text">{{item.price}}</p>
-        <p class="card-text">{{item.barcode}}</p>
-        <a href="{{url_for('purchase_product')}}" class="btn btn-success">Purchase</a>
-        <a href="{{url_for('market_page')}}" class="btn btn-secondary">Back to Market</a>
+    <div class="row">
+      <div class="col-lg-8">
+        <!-- Image Carousel -->
+        <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="{{ product.image }}" class="d-block w-100 img-fluid" alt="{{ product.title }}" style="max-height: 400px; object-fit: contain;">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <h1 class="h4">{{ product.title }}</h1>
+        <p class="h5 text-white">${{ product.price }}</p>
+
+        <div class="form-group">
+          <label for="quantity">Quantity</label>
+          <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control" />
+        </div>
+
+        <button class="btn btn-primary btn-lg w-100 mt-3">
+          Add to Cart
+        </button>
+
+        <div class="mt-4">
+          <h5>Description</h5>
+          <p>{{ product.description }}</p>
         </div>
       </div>
     </div>
-  
+  </div>
+
 </body>
 </html>
