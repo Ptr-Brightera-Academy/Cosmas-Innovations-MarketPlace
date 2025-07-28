@@ -14,6 +14,7 @@ body {
   background-color: #212121;
   color: white;
   font-family: 'Segoe UI', sans-serif;
+  padding-top: 70px;
 }
 
 /* Register Page Light theme */
@@ -148,3 +149,19 @@ body.light-mode .btn-outline-light {
   pointer-events: auto;
 }
 
+/* Cart Page */
+.cart-container {
+      max-width: 800px;
+      margin: auto;
+    }
+    .cart-header {
+      font-weight: 600;
+      font-size: 1.75rem;
+    }
+    .product-img {
+      max-width: 90px;
+      border-radius: 5px;
+    }
+    .empty-cart {
+      display: none;
+    }

@@ -14,7 +14,7 @@ from slugify import slugify
 @app.route('/')
 def home_page():
     products = Product.query.filter_by(published=True).order_by(Product.created_at.desc()).all()
-    return render_template('users/views/home.html', products =products)
+    return render_template('users/views/home.html', products =products, title_class="text-white")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_page():
@@ -27,7 +27,6 @@ def login_page():
 
         if attempted_user and attempted_user.check_password_correction(attempted_password = form.password.data):
             login_user(attempted_user)
-            flash('Successfully logged in', category='success')
             return redirect(url_for('market_page')) 
         else:
             flash('Login failed | Wrong credintials.', category='danger')
@@ -60,11 +59,11 @@ def market_page():
 
     query = Product.query
     if search_query:
-        query = query.filter(Product.name.ilike(f"%{search_query}%"))
-    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
-    items = pagination.items
+        query = query.filter(Product.title.ilike(f"%{search_query}%"))
+        pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+        products = pagination.items
         
-    return render_template('users/views/market.html', items=items, products =products)
+    return render_template('users/views/market.html', products =products, title_class="text-dark")
 
 @app.route('/logout')
 def logout_page():
@@ -77,9 +76,9 @@ def product_details(slug):
     product = Product.query.filter_by(slug=slug).first_or_404()
     return render_template('users/views/product_details.html', product=product)
 
-@app.route('/purchase_product')
-def purchase_product():
-    return render_template('users/views/purchase_product.html')
+@app.route('/cart/view')
+def cart_page():
+    return render_template('users/views/cart_items.html')
 
 @app.route('/myAccount/lost_password', methods=['GET', 'POST'])
 def reset_request():
@@ -96,19 +95,23 @@ def reset_request():
     return render_template('users/auth/reset_request.html', form=form)
 
 @app.route("/admin/dashboard")
+@login_required
 def admin_dashboard():
     return render_template("admin/views/dashboard.html", current_year=datetime.now().year)
 
-@app.route("/orders")
+@app.route("/admin/view/orders")
+@login_required
 def view_orders():
     return render_template("admin/views/orders.html", current_year=datetime.now().year)
 
-@app.route("/users")
+@app.route("/admin/view/users")
+@login_required
 def admin_users():
     users = User.query.all()
     return render_template("admin/views/users.html", current_year=datetime.now().year, users=users)
 
 @app.route('/admin/users/edit/<int:user_id>', methods=['POST'])
+@login_required
 def edit_user(user_id):
     user = User.query.get_or_404(user_id)
     new_username = request.form.get('username')
@@ -148,6 +151,7 @@ def edit_user(user_id):
 
 
 @app.route('/admin/users/delete/<int:user_id>')
+@login_required
 def delete_user(user_id):
     user_to_delete = User.query.get_or_404(user_id)
 
@@ -161,7 +165,8 @@ def delete_user(user_id):
         flash('An error occurred while deleting the user.', 'danger')
         return redirect(url_for('admin_users'))
 
-@app.route("/products")
+@app.route("/admin/view/products")
+@login_required
 def view_products():
     products = Product.query.order_by(Product.updated_at.desc()).all()
     form = ProductForm()
@@ -170,21 +175,43 @@ def view_products():
      form = form,
      products = products)
 
-@app.route("/customers")
+@app.route("/admin/view/customers")
+@login_required
 def view_customers():
     return render_template("admin/views/customers.html", current_year=datetime.now().year)
 
-@app.route("/reports")
+@app.route("/admin/view/reports")
+@login_required
 def view_reports():
     return render_template("admin/views/reports.html", current_year=datetime.now().year)
 
-@app.route("/settings")
+@app.route("/admin/settings")
+@login_required
 def admin_settings():
     return render_template("admin/views/settings.html", current_year=datetime.now().year)
 
-@app.route("/admin/login")
+@app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    return render_template("admin/auth/login.html")
+    form = LoginForm()
+    if form.validate_on_submit():
+        identifier = form.username_or_email.data
+        password = form.password.data
+
+        user = User.query.filter(
+            (User.email_address == identifier) | (User.username == identifier)
+        ).first()
+
+        if user and user.check_password_correction(password):
+            if user.is_admin:
+                login_user(user)
+                return redirect(url_for('admin_dashboard'))
+            else:
+                flash("You do not have permission to access the admin panel.", category='danger')
+        else:
+            flash("Username/email or password is incorrect.", category='danger')
+
+    return render_template("admin/auth/login.html", form=form)
+
 
 @app.route('/admin/logout')
 def admin_logout():

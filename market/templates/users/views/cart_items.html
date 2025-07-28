@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Cart | Cosmas Innovation</title>
+  {% include "users/components/bootstrap.html" %}
+</head>
+
+<body>
+  {% include "users/components/navbar.html" %}
+
+  <div class="container my-5 cart-container">
+    <h1 class="text-center cart-header mb-4">Your Cart Items</h1>
+
+    <div class="bg-white p-4 shadow-sm rounded border">
+
+      <!-- Product Item -->
+      <div class="border rounded p-3 mb-4">
+        <div class="row align-items-center">
+          <div class="col-auto">
+            <a href="product-link.html">
+              <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Product Image" class="product-img img-fluid" />
+            </a>
+          </div>
+          <div class="col">
+            <h5 class="mb-2 text-muted">Dell Laptop</h5>
+            <p class="mb-1 text-muted">Price: <strong>$20.00</strong></p>
+            <div class="d-flex align-items-center">
+              <label class="me-2 mb-0">Qty:</label>
+              <input type="number" min="1" value="1" class="form-control form-control-sm w-25 me-2" />
+              <a href="#" class="btn btn-sm btn-outline-danger">Remove</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Product Item -->
+
+      <!-- Cart Summary -->
+      <div class="border-top pt-3">
+        <div class="d-flex justify-content-between mb-2">
+          <span class="fw-bold text-muted">Subtotal</span>
+          <span class="fw-bold text-muted">$20.00</span>
+        </div>
+        <p class="text-muted small">Shipping and taxes calculated at checkout.</p>
+        <form action="checkout-link.html" method="POST">
+          <button type="submit" class="btn btn-primary w-100">Proceed to Checkout</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Empty Cart Message -->
+    <div class="text-center text-muted mt-5 empty-cart">
+      You don't have any items in your cart.
+    </div>
+  </div>
+</body>
+</html>

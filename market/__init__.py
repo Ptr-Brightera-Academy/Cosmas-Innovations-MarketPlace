@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
 from flask_bcrypt import Bcrypt
@@ -20,8 +20,14 @@ db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
 bcrypt= Bcrypt(app)
 login_manager = LoginManager(app)
-login_manager.login_view = "login_page"
 login_manager.login_message_category = "info"
+
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    if request.path.startswith('/admin'):
+        return redirect(url_for('admin_login'))
+    else:
+        return redirect(url_for('login_page'))
 
     # Importing routes
 from market import routes
