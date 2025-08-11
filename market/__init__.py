@@ -14,7 +14,8 @@ app = Flask(__name__)
 # database creation
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'market.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'b3a7ad096790a5d6213e02a1'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+
 
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
