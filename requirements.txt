@@ -7,3 +7,4 @@ flask-bcrypt
 gunicorn
 email_validator
 slugify
+python-dotenv
