@@ -3,7 +3,7 @@ from flask import render_template, url_for, flash, redirect, request
 from werkzeug.utils import secure_filename
 from market.models import Product, User
 from market.forms import RegisterForm, LoginForm, ResetRequestForm, ProductForm
-from market import db
+from market import db, admin_required
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
 import os
@@ -11,6 +11,11 @@ import slugify
 from slugify import slugify
 
 # Routes
+@app.errorhandler(403)
+def forbidden_error(error):
+    return render_template('users/auth/error.html', error_code=403,
+    error_message="You do not have permission to access this page."), 403
+
 @app.route('/')
 def home_page():
     products = Product.query.filter_by(published=True).order_by(Product.created_at.desc()).all()
@@ -95,23 +100,23 @@ def reset_request():
     return render_template('users/auth/reset_request.html', form=form)
 
 @app.route("/admin/dashboard")
-@login_required
+@admin_required
 def admin_dashboard():
     return render_template("admin/views/dashboard.html", current_year=datetime.now().year)
 
 @app.route("/admin/view/orders")
-@login_required
+@admin_required
 def view_orders():
     return render_template("admin/views/orders.html", current_year=datetime.now().year)
 
 @app.route("/admin/view/users")
-@login_required
+@admin_required
 def admin_users():
     users = User.query.all()
     return render_template("admin/views/users.html", current_year=datetime.now().year, users=users)
 
 @app.route('/admin/users/edit/<int:user_id>', methods=['POST'])
-@login_required
+@admin_required
 def edit_user(user_id):
     user = User.query.get_or_404(user_id)
     new_username = request.form.get('username')
@@ -151,7 +156,7 @@ def edit_user(user_id):
 
 
 @app.route('/admin/users/delete/<int:user_id>')
-@login_required
+@admin_required
 def delete_user(user_id):
     user_to_delete = User.query.get_or_404(user_id)
 
@@ -166,7 +171,7 @@ def delete_user(user_id):
         return redirect(url_for('admin_users'))
 
 @app.route("/admin/view/products")
-@login_required
+@admin_required
 def view_products():
     products = Product.query.order_by(Product.updated_at.desc()).all()
     form = ProductForm()
@@ -176,17 +181,17 @@ def view_products():
      products = products)
 
 @app.route("/admin/view/customers")
-@login_required
+@admin_required
 def view_customers():
     return render_template("admin/views/customers.html", current_year=datetime.now().year)
 
 @app.route("/admin/view/reports")
-@login_required
+@admin_required
 def view_reports():
     return render_template("admin/views/reports.html", current_year=datetime.now().year)
 
 @app.route("/admin/settings")
-@login_required
+@admin_required
 def admin_settings():
     return render_template("admin/views/settings.html", current_year=datetime.now().year)
 
@@ -227,7 +232,7 @@ UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/products/create', methods=['GET', 'POST'])
-@login_required
+@admin_required
 def create_product():
     form = ProductForm()
     if request.method == 'POST':
@@ -277,7 +282,7 @@ def allowed_file(fname):
     return '.' in fname and fname.rsplit('.',1)[1].lower() in {'png','jpg','jpeg','gif'}
 
 @app.route('/admin/products/edit/<int:id>', methods=['POST'])
-@login_required
+@admin_required
 def edit_product(id):
     product = Product.query.get_or_404(id)
     product.title = request.form.get('title')
@@ -302,7 +307,7 @@ def edit_product(id):
     return redirect(url_for('view_products'))
 
 @app.route('/admin/products/delete/<int:id>', methods=['GET'])
-@login_required
+@admin_required
 def delete_product(id):
     product = Product.query.get_or_404(id)
     db.session.delete(product)
